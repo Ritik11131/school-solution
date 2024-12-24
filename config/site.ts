@@ -13,12 +13,8 @@ export const siteConfig = {
       href: "/main/about",
     },
   ],
-  navMenuItems: [
-
-  ],
-  links: {
-    
-  },
+  navMenuItems: [],
+  links: {},
   profileItems: [
     {
       key: "profile",

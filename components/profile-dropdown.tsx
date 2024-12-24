@@ -24,7 +24,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ items }) => (
         isBordered
         as="button"
         className="transition-transform"
-        color="secondary"
+        color="primary"
         name="Jason Hughes"
         size="sm"
         src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
