@@ -10,7 +10,7 @@ import { Toaster } from "react-hot-toast";
 export const metadata: Metadata = {
   title: {
     default: siteConfig.name,
-    template: `%s - ${siteConfig.name}`,
+    template: ``,
   },
   description: siteConfig.description,
   icons: {
