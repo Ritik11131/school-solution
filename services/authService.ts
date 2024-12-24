@@ -104,8 +104,8 @@ class AuthService {
     async login(username: string, password: string): Promise<AuthResponse> {
         const data = new URLSearchParams({
           grantType: "PASSWORD",
-          clientId: "6e9aa5f7835c15ac4a6d6edd906c9a59", // Replace with your actual clientId
-          clientSecret: "844c6535a7f77bc68ba5527b3603e3d1740f904fc64d77e5dfc5c4941a765a0a", // Replace with your actual clientSecret
+          clientId: process.env.CLIENT_ID || environment.CLIENT_ID,
+          clientSecret: process.env.CLIENT_SECRET || environment.CLIENT_SECRET,
           username,
           password,
         });
@@ -120,7 +120,7 @@ class AuthService {
           success: "Logged in successfully!",
           error: "Login failed. Please check your credentials.",
         });
-      }
+    }
 
     /**
      * Refreshes the access token using a refresh token.
