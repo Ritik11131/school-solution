@@ -14,24 +14,18 @@ export const siteConfig = {
     },
   ],
   navMenuItems: [
-    {
-      label: "Home",
-      href: "/main/home",
-    },
-    {
-      label: "About",
-      href: "/about",
-    },
-    {
-      label: "Logout",
-      href: "/logout",
-    },
+
   ],
   links: {
-    github: "https://github.com/nextui-org/nextui",
-    twitter: "https://twitter.com/getnextui",
-    docs: "https://nextui.org",
-    discord: "https://discord.gg/9b6yyZKmH4",
-    sponsor: "https://patreon.com/jrgarciadev",
+    
   },
+  profileItems: [
+    {
+      key: "profile",
+      content: "Signed in as",
+      email: "zoey@example.com",
+      isProfile: true,
+    },
+    { key: "logout", content: "Log Out", color: "danger" },
+  ]
 };
