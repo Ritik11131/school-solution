@@ -1,13 +1,8 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
-import { Link } from "@nextui-org/link";
-import clsx from "clsx";
 
 import { siteConfig } from "@/config/site";
-import { fontSans } from "@/config/fonts";
-import { Navbar } from "@/components/navbar";
-import { Providers } from "../providers";
-import { Toaster } from "react-hot-toast";
+import ProtectedRoute from "@/components/protected-route";
 
 export const metadata: Metadata = {
   title: {
@@ -33,10 +28,12 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-          <div className="flex flex-col h-screen">
-            <main className="flex-grow flex justify-center items-center">
-              {children}
-            </main>
-          </div>
+    <ProtectedRoute>
+    <div className="flex flex-col h-screen">
+      <main className="flex-grow flex justify-center items-center">
+        {children}
+      </main>
+    </div>
+    </ProtectedRoute>
   );
 }

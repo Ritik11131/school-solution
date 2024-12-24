@@ -1,13 +1,7 @@
-import  { Toaster } from 'react-hot-toast';
-import React from 'react'
+import { redirect } from 'next/navigation';
 
 const App = () => {
-  return (
-   
-       <>
-       </>
-   
-  )
+  redirect('/main');
 }
 
-export default App
+export default App;

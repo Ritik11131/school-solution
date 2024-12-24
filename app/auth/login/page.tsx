@@ -9,7 +9,6 @@ import { Button } from "@nextui-org/button";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@/components/icons";
 import AuthService from "@/services/authService"; // Adjust this import path based on your file structure
 import { useRouter } from "next/navigation"; // If you're using Next.js for routing
-import toast from 'react-hot-toast';
 
 export default function LoginPage() {
   const router = useRouter();

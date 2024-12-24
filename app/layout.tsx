@@ -39,10 +39,10 @@ export default function AuthLayout({
           fontSans.variable
         )}
       >
-        <Toaster/>
-        <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          {children}
-        </Providers>
+        <Toaster />
+          <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
+            {children}
+          </Providers>
       </body>
     </html>
   );

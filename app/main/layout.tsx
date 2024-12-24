@@ -1,12 +1,12 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
-import { Link } from "@nextui-org/link";
-import clsx from "clsx";
+
 
 import { siteConfig } from "@/config/site";
-import { fontSans } from "@/config/fonts";
+
 import { Navbar } from "@/components/navbar";
-import { Providers } from "../providers";
+
+import ProtectedRoute from "@/components/protected-route";
 
 export const metadata: Metadata = {
   title: {
@@ -32,11 +32,13 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-          <div className="relative flex flex-col h-screen">
-            <Navbar />
-            <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
-              {children}
-            </main>
-          </div>
+    <ProtectedRoute>
+      <div className="relative flex flex-col h-screen">
+        <Navbar />
+        <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
+          {children}
+        </main>
+      </div>
+    </ProtectedRoute>
   );
 }
