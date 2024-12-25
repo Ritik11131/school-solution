@@ -1,4 +1,3 @@
-import { decodeJwt } from '@/utils/cookieUtils';
 import axios, { AxiosError } from 'axios';
 import { AuthResponse } from '@/interface/authInterface';
 import { environment } from '@/environment/environment.dev';
@@ -33,7 +32,7 @@ class AuthService {
         this.apiClient.interceptors.response.use(
             (response) => response, // Simply return the response if no error
             async (error: AxiosError) => {
-                const originalRequest : any = error.config;
+                const originalRequest: any = error.config;
 
                 // If the error is 401 and token has expired, try to refresh the token
                 if (error.response?.status === 401 && !originalRequest._retry) {
@@ -81,9 +80,9 @@ class AuthService {
     private async apiCall<T>(
         promise: Promise<T>,
         messages: { loading: string; success: string; error: string }
-      ): Promise<T> {
+    ): Promise<T> {
         return toast.promise(promise, messages);
-      }
+    }
 
     private addRefreshSubscriber(subscriber: Function) {
         this.refreshSubscribers.push(subscriber);
@@ -103,24 +102,24 @@ class AuthService {
      */
     async login(username: string, password: string): Promise<AuthResponse> {
         const data = new URLSearchParams({
-          grantType: "PASSWORD",
-          clientId: process.env.CLIENT_ID || environment.CLIENT_ID,
-          clientSecret: process.env.CLIENT_SECRET || environment.CLIENT_SECRET,
-          username,
-          password,
+            grantType: "PASSWORD",
+            clientId: process.env.CLIENT_ID || environment.CLIENT_ID,
+            clientSecret: process.env.CLIENT_SECRET || environment.CLIENT_SECRET,
+            username,
+            password,
         });
-    
-        const loginPromise = this.apiClient.post<AuthResponse>("/token", data).then((response) => {
-          this.saveTokens(response.data);
-          return response.data;
+
+        const loginPromise = this.apiClient.post<AuthResponse>("/token", data).then((response:any) => {
+            this.saveTokens(response?.data?.data);
+            return response.data;
         });
-    
-        return this.apiCall(loginPromise, {
-          loading: "Logging in...",
-          success: "Logged in successfully!",
-          error: "Login failed. Please check your credentials.",
-        });
-    }
+
+            return this.apiCall(loginPromise, {
+                loading: "Logging in...",
+                success: "Logged in successfully!",
+                error: "Login failed. Please check your credentials.",
+            });
+            }
 
     /**
      * Refreshes the access token using a refresh token.
@@ -163,9 +162,9 @@ class AuthService {
      * Save tokens to localStorage.
      * @param tokens - AuthResponse
      */
-    private saveTokens(tokens: AuthResponse) {
-        localStorage.setItem('access_token', tokens.accessToken);
-        localStorage.setItem('refresh_token', tokens.refreshToken);
+    private saveTokens(authResponse: AuthResponse) {
+        localStorage.setItem('access_token', authResponse.accessToken);
+        localStorage.setItem('refresh_token', authResponse.refreshToken);
     }
 
     /**
@@ -174,6 +173,14 @@ class AuthService {
     private clearTokens() {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
+    }
+
+    /**
+  * Checks if the user is authenticated by validating the access token.
+  * @returns boolean
+  */
+    isAuthenticated(): boolean {
+        return !!localStorage.getItem('access_token'); // Replace with actual validation logic
     }
 }
 
