@@ -15,9 +15,10 @@ interface DropdownItemProps {
 
 interface ProfileDropdownProps {
   items: DropdownItemProps[];
+  onAction: (key: string) => void;
 }
 
-const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ items }) => (
+const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ items, onAction }) => (
   <Dropdown>
     <DropdownTrigger>
       <Avatar
@@ -30,8 +31,12 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ items }) => (
         src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
       />
     </DropdownTrigger>
-    <DropdownMenu aria-label="Dynamic Actions" variant="flat" items={items}>
-      {(item) => (
+    <DropdownMenu
+      aria-label="Dynamic Actions"
+      variant="flat"
+      onAction={(key:any) => onAction(key)}
+    >
+      {items.map((item) => (
         <DropdownItem
           key={item.key}
           className={item.key === "logout" ? "text-danger" : ""}
@@ -46,7 +51,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ items }) => (
             item.content
           )}
         </DropdownItem>
-      )}
+      ))}
     </DropdownMenu>
   </Dropdown>
 );

@@ -141,24 +141,6 @@ class AuthService {
     }
 
     /**
-     * Logs out the user by revoking tokens.
-     * @returns Promise<void>
-     */
-    async logout(): Promise<void> {
-        const token = localStorage.getItem('access_token');
-        if (!token) {
-            return;
-        }
-
-        const data = new URLSearchParams({
-            token,
-        });
-
-        await this.apiClient.post('/revoke', data);
-        this.clearTokens();
-    }
-
-    /**
      * Save tokens to localStorage.
      * @param tokens - AuthResponse
      */
@@ -170,7 +152,7 @@ class AuthService {
     /**
      * Clear tokens from localStorage.
      */
-    private clearTokens() {
+    clearTokens() {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
     }

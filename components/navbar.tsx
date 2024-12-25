@@ -15,8 +15,17 @@ import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { Logo } from "@/components/icons";
 import ProfileDropdown from "./profile-dropdown";
+import authService from "@/services/authService";
+import { redirect } from "next/navigation";
 
 export const Navbar = () => {
+
+  const handleAction = (key: string) => {
+    console.log('Selected action:', key);
+    // Handle the selected action here
+
+    key === 'logout' && (authService.clearTokens(), redirect('/auth/login'))
+  };
 
   return (
     <NextUINavbar maxWidth="xl" position="sticky">
@@ -54,13 +63,13 @@ export const Navbar = () => {
         </NavbarItem>
 
         <NavbarItem className="hidden sm:flex gap-2">
-          <ProfileDropdown items={siteConfig?.profileItems} />
+          <ProfileDropdown items={siteConfig?.profileItems} onAction={handleAction}/>
         </NavbarItem>
       </NavbarContent>
 
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
         <ThemeSwitch />
-        <ProfileDropdown items={siteConfig?.profileItems} />
+        <ProfileDropdown items={siteConfig?.profileItems} onAction={handleAction}/>
       </NavbarContent>
     </NextUINavbar>
   );
