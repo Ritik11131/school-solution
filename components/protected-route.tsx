@@ -26,12 +26,12 @@ const ProtectedRoute: React.FC<any> = ({ children }) => {
       } else {
         setIsAuthenticated(true);
         if (pathname.startsWith('/auth')) {
-          router.replace('/main'); // Redirect to main page if authenticated
+          router.replace('/main/dashboard'); // Redirect to main page if authenticated
         }
       }
       setIsLoading(false); // Set loading to false after authentication check
     };
-
+    
     checkAuthentication();
   }, [router, pathname]);
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from 'react';
 import {
   Navbar as NextUINavbar,
   NavbarContent,
@@ -10,7 +11,7 @@ import {
 import { link as linkStyles } from "@nextui-org/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
-
+import { usePathname } from 'next/navigation';
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { Logo } from "@/components/icons";
@@ -19,6 +20,32 @@ import authService from "@/services/authService";
 import { redirect } from "next/navigation";
 
 export const Navbar = () => {
+
+    const pathname = usePathname();
+
+
+      // Memoize the navigation items rendering
+  const renderedNavItems = useMemo(() => {
+    if (pathname === "/main") {
+      return null;
+    }
+
+    return siteConfig.navItems?.map((item) => (
+      <NavbarItem key={item.href}>
+        <NextLink
+          className={clsx(
+            linkStyles({ color: "foreground" }),
+            "data-[active=true]:text-primary data-[active=true]:font-medium"
+          )}
+          href={item.href}
+          aria-label={`Navigate to ${item.label}`}
+        >
+          {item.label}
+        </NextLink>
+      </NavbarItem>
+    ));
+  }, [pathname, siteConfig.navItems]);
+
 
   const handleAction = (key: string) => {
     console.log('Selected action:', key);
@@ -37,20 +64,7 @@ export const Navbar = () => {
           </NextLink>
         </NavbarBrand>
         <ul className="hidden lg:flex gap-4 justify-start ml-2">
-          {siteConfig.navItems.map((item) => (
-            <NavbarItem key={item.href}>
-              <NextLink
-                className={clsx(
-                  linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium"
-                )}
-                color="foreground"
-                href={item.href}
-              >
-                {item.label}
-              </NextLink>
-            </NavbarItem>
-          ))}
+          {renderedNavItems}
         </ul>
       </NavbarContent>
 
