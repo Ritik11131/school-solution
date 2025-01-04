@@ -41,6 +41,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ items, onAction }) =>
           key={item.key}
           className={item.key === "logout" ? "text-danger" : ""}
           color={item.key === "logout" ? "danger" : "default"}
+          textValue={item.key === "logout" ? "Logout" : item.isProfile ? "Profile" : "Other"} // Proper textValue for logout and profile
         >
           {item.isProfile ? (
             <div>
