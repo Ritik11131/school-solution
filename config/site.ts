@@ -3,18 +3,17 @@ export type SiteConfig = typeof siteConfig;
 export const siteConfig = {
   name: "School Solution",
   description: "Need help with your school work? We got you covered!",
+  welcomeMsg: "Welcome back",
   navItems: [
     {
-      label: "Home",
-      href: "/main/home",
+      label: "Dashboard",
+      href: "/main/dashboard",
     },
     {
-      label: "About",
-      href: "/main/about",
+      label: "Route Management",
+      href: "/main/route-management",
     },
   ],
-  navMenuItems: [],
-  links: {},
   profileItems: [
     {
       key: "profile",
@@ -22,6 +21,9 @@ export const siteConfig = {
       email: "zoey@example.com",
       isProfile: true,
     },
-    { key: "logout", content: "Log Out", color: "danger" },
+    { key: "logout", 
+      content: "Log Out", 
+      color: "danger"
+    },
   ]
 };

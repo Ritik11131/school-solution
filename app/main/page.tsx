@@ -1,262 +1,61 @@
-'use client'
-import GenericTable from '@/components/generic-table';
-import { ChipProps } from '@nextui-org/chip';
-import React from 'react'
-
+"use client";
+import { siteConfig } from "@/config/site";
+import React from "react";
+import { Image } from "@nextui-org/image";
+import {Link} from "@nextui-org/link";
+import { Divider } from "@nextui-org/divider";
 
 const MainPage = () => {
-  const columns = [
-    { name: "ID", uid: "id", sortable: true },
-    { name: "NAME", uid: "name", sortable: true },
-    { name: "AGE", uid: "age", sortable: true },
-    { name: "ROLE", uid: "role", sortable: true },
-    { name: "TEAM", uid: "team" },
-    { name: "EMAIL", uid: "email" },
-    { name: "STATUS", uid: "status", sortable: true },
-    { name: "ACTIONS", uid: "actions" },
-  ];
-  
-  const statusOptions = [
-    { name: "Active", uid: "active" },
-    { name: "Paused", uid: "paused" },
-    { name: "Vacation", uid: "vacation" },
-  ];
-  
-  const users = [
-    {
-      id: 1,
-      name: "Tony Reichert",
-      role: "CEO",
-      team: "Management",
-      status: "active",
-      age: "29",
-      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-      email: "tony.reichert@example.com",
-    },
-    {
-      id: 2,
-      name: "Zoey Lang",
-      role: "Tech Lead",
-      team: "Development",
-      status: "paused",
-      age: "25",
-      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-      email: "zoey.lang@example.com",
-    },
-    {
-      id: 3,
-      name: "Jane Fisher",
-      role: "Sr. Dev",
-      team: "Development",
-      status: "active",
-      age: "22",
-      avatar: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-      email: "jane.fisher@example.com",
-    },
-    {
-      id: 4,
-      name: "William Howard",
-      role: "C.M.",
-      team: "Marketing",
-      status: "vacation",
-      age: "28",
-      avatar: "https://i.pravatar.cc/150?u=a048581f4e29026701d",
-      email: "william.howard@example.com",
-    },
-    {
-      id: 5,
-      name: "Kristen Copper",
-      role: "S. Manager",
-      team: "Sales",
-      status: "active",
-      age: "24",
-      avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026700d",
-      email: "kristen.cooper@example.com",
-    },
-    {
-      id: 6,
-      name: "Brian Kim",
-      role: "P. Manager",
-      team: "Management",
-      age: "29",
-      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-      email: "brian.kim@example.com",
-      status: "Active",
-    },
-    {
-      id: 7,
-      name: "Michael Hunt",
-      role: "Designer",
-      team: "Design",
-      status: "paused",
-      age: "27",
-      avatar: "https://i.pravatar.cc/150?u=a042581f4e29027007d",
-      email: "michael.hunt@example.com",
-    },
-    {
-      id: 8,
-      name: "Samantha Brooks",
-      role: "HR Manager",
-      team: "HR",
-      status: "active",
-      age: "31",
-      avatar: "https://i.pravatar.cc/150?u=a042581f4e27027008d",
-      email: "samantha.brooks@example.com",
-    },
-    {
-      id: 9,
-      name: "Frank Harrison",
-      role: "F. Manager",
-      team: "Finance",
-      status: "vacation",
-      age: "33",
-      avatar: "https://i.pravatar.cc/150?img=4",
-      email: "frank.harrison@example.com",
-    },
-    {
-      id: 10,
-      name: "Emma Adams",
-      role: "Ops Manager",
-      team: "Operations",
-      status: "active",
-      age: "35",
-      avatar: "https://i.pravatar.cc/150?img=5",
-      email: "emma.adams@example.com",
-    },
-    {
-      id: 11,
-      name: "Brandon Stevens",
-      role: "Jr. Dev",
-      team: "Development",
-      status: "active",
-      age: "22",
-      avatar: "https://i.pravatar.cc/150?img=8",
-      email: "brandon.stevens@example.com",
-    },
-    {
-      id: 12,
-      name: "Megan Richards",
-      role: "P. Manager",
-      team: "Product",
-      status: "paused",
-      age: "28",
-      avatar: "https://i.pravatar.cc/150?img=10",
-      email: "megan.richards@example.com",
-    },
-    {
-      id: 13,
-      name: "Oliver Scott",
-      role: "S. Manager",
-      team: "Security",
-      status: "active",
-      age: "37",
-      avatar: "https://i.pravatar.cc/150?img=12",
-      email: "oliver.scott@example.com",
-    },
-    {
-      id: 14,
-      name: "Grace Allen",
-      role: "M. Specialist",
-      team: "Marketing",
-      status: "active",
-      age: "30",
-      avatar: "https://i.pravatar.cc/150?img=16",
-      email: "grace.allen@example.com",
-    },
-    {
-      id: 15,
-      name: "Noah Carter",
-      role: "IT Specialist",
-      team: "I. Technology",
-      status: "paused",
-      age: "31",
-      avatar: "https://i.pravatar.cc/150?img=15",
-      email: "noah.carter@example.com",
-    },
-    {
-      id: 16,
-      name: "Ava Perez",
-      role: "Manager",
-      team: "Sales",
-      status: "active",
-      age: "29",
-      avatar: "https://i.pravatar.cc/150?img=20",
-      email: "ava.perez@example.com",
-    },
-    {
-      id: 17,
-      name: "Liam Johnson",
-      role: "Data Analyst",
-      team: "Analysis",
-      status: "active",
-      age: "28",
-      avatar: "https://i.pravatar.cc/150?img=33",
-      email: "liam.johnson@example.com",
-    },
-    {
-      id: 18,
-      name: "Sophia Taylor",
-      role: "QA Analyst",
-      team: "Testing",
-      status: "active",
-      age: "27",
-      avatar: "https://i.pravatar.cc/150?img=29",
-      email: "sophia.taylor@example.com",
-    },
-    {
-      id: 19,
-      name: "Lucas Harris",
-      role: "Administrator",
-      team: "Information Technology",
-      status: "paused",
-      age: "32",
-      avatar: "https://i.pravatar.cc/150?img=50",
-      email: "lucas.harris@example.com",
-    },
-    {
-      id: 20,
-      name: "Mia Robinson",
-      role: "Coordinator",
-      team: "Operations",
-      status: "active",
-      age: "26",
-      avatar: "https://i.pravatar.cc/150?img=45",
-      email: "mia.robinson@example.com",
-    },
-  ];
-  
-  const statusColorMap: Record<string, ChipProps["color"]> = {
-    active: "success",
-    paused: "danger",
-    vacation: "warning",
-  };
-
-  const handleAdd = () => {
-    console.log("Add new user");
-    // Implement add user logic
-  };
-
-  const handleEdit = (id: number) => {
-    console.log("Edit user with ID:", id);
-    // Implement edit user logic
-  };
-
-  const handleDelete = (id: number) => {
-    console.log("Delete user with ID:", id);
-    // Implement delete user logic
-  };
-
   return (
-    <div>
-      <GenericTable
-        columns={columns}
-        data={users}
-        statusOptions={statusOptions}
-        statusColorMap={statusColorMap}
+    <section className=" body-font">
+      <div className="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
+        <div className="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center">
+          <div className="space-y-1">
+            <h1 className="text-4xl font-medium">{siteConfig.welcomeMsg}</h1>
+            <p className="text-large text-transparent bg-clip-text bg-gradient-to-r to-indigo-600 from-violet-400">Ritik Gupta</p>
+          </div>
+          <Divider className="my-4" />
+          <div className="flex h-5 items-center space-x-4 text-small">
+          <Link href="/main/dashboard">Dashboard</Link>
+            <Divider orientation="vertical" />
+            <div>Docs</div>
+            <Divider orientation="vertical" />
+            <div>Source</div>
+          </div>
+          {/* <p className="mb-8 leading-relaxed">
+            Copper mug try-hard pitchfork pour-over freegan heirloom neutra air
+            plant cold-pressed tacos poke beard tote bag. Heirloom echo park
+            mlkshk tote bag selvage hot chicken authentic tumeric truffaut
+            hexagon try-hard chambray.
+          </p> */}
         
-      />
-    </div>
+          <div className="flex justify-center">
+            {/* <Button color="primary" endContent={<ArrowRight />}>
+              Go to Dashboard
+            </Button> */}
+            {/* <button className="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">Button</button> */}
+            {/* <button className="ml-4 inline-flex text-gray-700 bg-gray-100 border-0 py-2 px-6 focus:outline-none hover:bg-gray-200 rounded text-lg">Button</button> */}
+          </div>
+        </div>
+        <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6">
+          {/* <img
+            className="object-cover object-center rounded"
+            alt="hero"
+            src="https://dummyimage.com/720x600"
+          /> */}
+
+          <Image
+            alt="NextUI Image with fallback"
+            isZoomed
+            isBlurred
+            width={400}
+            height={500}
+            src="https://app.requestly.io/delay/5000/https://nextui.org/images/hero-card-complete.jpeg"
+          />
+        </div>
+      </div>
+    </section>
   );
-}
+};
 
 export default MainPage;

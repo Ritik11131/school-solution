@@ -307,17 +307,9 @@ const GenericTable: React.FC<GenericTableProps> = ({
             ? "All items selected"
             : `${selectedKeys.size} of ${filteredItems.length} selected`}
         </span>
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          color="primary"
-          page={page}
-          total={pages}
-          onChange={setPage}
-        />
+        
         <div className="hidden sm:flex w-[30%] justify-end gap-2">
-          <Button
+          {/* <Button
             isDisabled={pages === 1}
             size="sm"
             variant="flat"
@@ -332,7 +324,16 @@ const GenericTable: React.FC<GenericTableProps> = ({
             onPress={onNextPage}
           >
             Next
-          </Button>
+          </Button> */}
+            <Pagination
+          isCompact
+          showControls
+          showShadow
+          color="primary"
+          page={page}
+          total={pages}
+          onChange={setPage}
+        />
         </div>
       </div>
     );
