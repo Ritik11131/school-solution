@@ -43,6 +43,11 @@ export const Navbar = () => {
 
 
   const renderedNavItems = React.useMemo(() => {
+    if (pathname === "/main") {
+      return null;
+    }
+
+
     return siteConfig.navItems?.map((item) => {
       if (item.children) {
         return (
@@ -96,7 +101,7 @@ export const Navbar = () => {
         </NavbarItem>
       );
     });
-  }, [siteConfig.navItems]);
+  }, [pathname,siteConfig.navItems]);
 
   return (
     <NextUINavbar maxWidth="xl" position="sticky">
