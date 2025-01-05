@@ -7,16 +7,14 @@ import {
   NavbarBrand,
   NavbarItem,
 } from "@nextui-org/navbar";
-
+import { usePathname,useRouter  } from "next/navigation";
 import { link as linkStyles } from "@nextui-org/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
-import { usePathname,useRouter  } from "next/navigation";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { Logo } from "@/components/icons";
 import ProfileDropdown from "./profile-dropdown";
-import authService from "@/services/authService";
 import { redirect } from "next/navigation";
 import {
   Dropdown,
@@ -26,11 +24,12 @@ import {
 } from "@nextui-org/dropdown";
 import { Button } from "@nextui-org/button";
 import { ChevronDownIcon, User2Icon, Users } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
-
+  const {logout} = useAuth();
   
 
   const handleNavigation = (href : string) => {
@@ -39,7 +38,7 @@ export const Navbar = () => {
 
   const handleAction = (key: string) => {
     console.log("Selected action:", key);
-    key === "logout" && (authService.clearTokens(), redirect("/auth/login"));
+    key === "logout" && (logout());
   };
 
 
