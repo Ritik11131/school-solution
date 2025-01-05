@@ -158,7 +158,6 @@ const GenericTable: React.FC<GenericTableProps> = ({
                 </Button>
               </DropdownTrigger>
               <DropdownMenu>
-                <DropdownItem key="view">View</DropdownItem>
                 <DropdownItem key="edit">Edit</DropdownItem>
                 <DropdownItem key="delete">Delete</DropdownItem>
               </DropdownMenu>

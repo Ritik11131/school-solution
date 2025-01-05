@@ -10,8 +10,12 @@ export const siteConfig = {
       href: "/main/dashboard",
     },
     {
-      label: "Route Management",
+      label: "Management",
       href: "/main/route-management",
+      children: [
+        { key:'crew',label: "Crew", href: "/main/management/crew" },
+        { key:'parent',label: "Parent", href: "/main/management/parent" },
+      ],
     },
   ],
   profileItems: [
