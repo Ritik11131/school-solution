@@ -1,32 +1,21 @@
-import { useCallback } from "react";
-import { useApiClient } from "./useApiClient";
-
-interface ParentResponse {
-    id: number;
-    name: string;
-    email: string;
-    contactNumber: string;
-  }
+// hooks/useParents.ts
+import { useCallback } from 'react';
+import { useApiClient } from './useApiClient'; // Adjust the import path as necessary
+import { ParentResponse } from '@/interface/parent'; // Adjust the import path as necessary
 
 export const useParents = () => {
+  const { isLoading, request } = useApiClient<ParentResponse>({ showToast: true });
 
-    const { isLoading,request } = useApiClient<ParentResponse>({ showToast: true });
+  const fetchParents = useCallback(async () => {
+    const response = await request({
+      method: 'GET',
+      url: '/parents/list',
+    });
+    return response;
+  }, [request]);
 
-    const fetchParents = useCallback(async () => {
-
-        const response = await request(
-          {
-            method: 'GET',
-            url: '/parents/list',
-          },
-        );
-        
-        return response;
-      }, [request]);
-
-      return {
-       isLoading,
-       fetchParents
-      };
-
-}
+  return {
+    isLoading,
+    fetchParents,
+  };
+};

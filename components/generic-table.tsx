@@ -36,16 +36,18 @@ export function capitalize(s: string) {
 interface GenericTableProps {
   columns: Array<{ name: string; uid: string; sortable?: boolean }>;
   data: Array<any>;
-  statusOptions: Array<{ name: string; uid: string }>;
-  statusColorMap:any
+  statusOptions?: Array<{ name: string; uid: string }>;
+  statusColorMap?:any,
+  initialVisibleColumns: Array<string>;
 }
 
-const INITIAL_VISIBLE_COLUMNS = ["name", "role", "status", "actions"];
+// const INITIAL_VISIBLE_COLUMNS = ["name", "role", "status", "actions"];
 
 const GenericTable: React.FC<GenericTableProps> = ({
   columns,
   data,
-  statusOptions,
+  initialVisibleColumns,
+  statusOptions = [],
   statusColorMap
 }) => {
   type User = (typeof data)[0];
@@ -54,7 +56,7 @@ const GenericTable: React.FC<GenericTableProps> = ({
     new Set([])
   );
   const [visibleColumns, setVisibleColumns] = React.useState<Selection>(
-    new Set(INITIAL_VISIBLE_COLUMNS)
+    new Set(initialVisibleColumns)
   );
   const [statusFilter, setStatusFilter] = React.useState<Selection>("all");
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -85,7 +87,7 @@ const GenericTable: React.FC<GenericTableProps> = ({
     }
     if (
       statusFilter !== "all" &&
-      Array.from(statusFilter).length !== statusOptions.length
+      Array.from(statusFilter).length !== statusOptions?.length
     ) {
       filteredUsers = filteredUsers.filter((user) =>
         Array.from(statusFilter).includes(user.status)
@@ -130,12 +132,14 @@ const GenericTable: React.FC<GenericTableProps> = ({
         );
       case "role":
         return (
-          <div className="flex flex-col">
-            <p className="text-bold text-small capitalize">{cellValue}</p>
-            <p className="text-bold text-tiny capitalize text-default-400">
-              {user.team}
-            </p>
-          </div>
+          <Chip
+            className="capitalize"
+            color={statusColorMap[user.role]}
+            size="sm"
+            variant="flat"
+          >
+            {cellValue}
+          </Chip>
         );
       case "status":
         return (
@@ -366,7 +370,7 @@ const GenericTable: React.FC<GenericTableProps> = ({
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody emptyContent={"No users found"} items={sortedItems}>
+      <TableBody emptyContent={"No data found"} items={sortedItems}>
         {(item) => (
           <TableRow key={item.id}>
             {(columnKey) => (
