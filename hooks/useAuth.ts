@@ -18,6 +18,7 @@ export const useAuth = () => {
 
   const login = useCallback(async (username: string, password: string) => {
     const data = new URLSearchParams({
+      audience:'web',
       grantType: "PASSWORD",
       clientId: environment.CLIENT_ID,
       clientSecret: environment.CLIENT_SECRET,
@@ -28,7 +29,7 @@ export const useAuth = () => {
     const response = await request(
       {
         method: 'POST',
-        url: '/token',
+        url: 'oauth/token',
         data,
       },
       {
@@ -62,7 +63,7 @@ export const useAuth = () => {
     const response = await request(
       {
         method: 'POST',
-        url: '/token/refresh',
+        url: 'oauth/token/refresh',
         data: { refresh_token: refreshToken },
       },
       {

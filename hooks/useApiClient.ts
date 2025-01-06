@@ -32,6 +32,17 @@ export const useApiClient = <T = any>(options: UseApiClientOptions = {}) => {
       })
       .finally(() => setIsLoading(false));
 
+
+      // Handle `GET` requests with spinner only
+    if (config.method?.toUpperCase() === 'GET') {
+        try {
+          return await promise;
+        } catch (error) {
+          throw error;
+        }
+    }
+
+    // Show toast notifications for other methods
     if (options.showToast && toastMessages) {
       return toast.promise(promise, {
         loading: toastMessages.loading || 'Loading...',

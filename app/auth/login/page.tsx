@@ -59,7 +59,7 @@ export default function LoginPage() {
           >
             <Input
               isRequired
-              defaultValue="john_doe"
+              defaultValue="9827786794"
               errorMessage="Please enter a valid username"
               label="Username"
               labelPlacement="outside"
@@ -71,7 +71,7 @@ export default function LoginPage() {
 
             <Input
               isRequired
-              defaultValue="johndoe1234"
+              defaultValue="123456"
               label="Password"
               labelPlacement="outside"
               name="password"
