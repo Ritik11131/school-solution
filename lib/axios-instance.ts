@@ -1,10 +1,35 @@
-import axios from 'axios';
-import { environment } from '@/environment/environment.dev';
+import axios, { AxiosInstance } from 'axios';
+import environment from '@/environment';
 
 let isRefreshing = false;
 let refreshSubscribers: ((token: string) => void)[] = [];
 
-export const createApiClient = (baseURL = environment.apiUrl) => {
+const handleTokenRefresh = async () => {
+  const refreshToken = localStorage.getItem('refresh_token');
+  if (!refreshToken) {
+    throw new Error('No refresh token available.');
+  }
+
+  const response = await axios.post(`${environment.authUrl}/oauth/token/refresh`, {
+    refresh_token: refreshToken,
+  });
+
+  const { accessToken } = response.data;
+  localStorage.setItem('access_token', accessToken);
+
+  return accessToken;
+};
+
+const onTokenRefreshed = (token: string) => {
+  refreshSubscribers.forEach((callback) => callback(token));
+  refreshSubscribers = [];
+};
+
+const addSubscriber = (callback: (token: string) => void) => {
+  refreshSubscribers.push(callback);
+};
+
+export const createApiClient = (baseURL: string): AxiosInstance => {
   const apiClient = axios.create({ baseURL });
 
   apiClient.interceptors.request.use(
@@ -23,10 +48,14 @@ export const createApiClient = (baseURL = environment.apiUrl) => {
     async (error) => {
       const originalRequest = error.config;
 
+      if (originalRequest?.url?.endsWith('oauth/token')) {
+        return Promise.reject(error);
+      }
+
       if (error.response?.status === 401 && !originalRequest._retry) {
         if (isRefreshing) {
           return new Promise((resolve) => {
-            refreshSubscribers.push((token) => {
+            addSubscriber((token) => {
               originalRequest.headers.Authorization = `Bearer ${token}`;
               resolve(apiClient(originalRequest));
             });
@@ -37,21 +66,14 @@ export const createApiClient = (baseURL = environment.apiUrl) => {
         isRefreshing = true;
 
         try {
-          const refreshToken = localStorage.getItem('refresh_token');
-          const response = await apiClient.post('/token/refresh', {
-            refresh_token: refreshToken,
-          });
-
-          const { accessToken } = response.data;
-          localStorage.setItem('access_token', accessToken);
-
-          refreshSubscribers.forEach((callback) => callback(accessToken));
-          refreshSubscribers = [];
-          
+          const newToken = await handleTokenRefresh();
+          onTokenRefreshed(newToken);
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
           return apiClient(originalRequest);
-        } catch (error) {
-          window.location.href = '/login';
-          return Promise.reject(error);
+        } catch (refreshError) {
+          localStorage.clear();
+          window.location.href = '/auth/login';
+          return Promise.reject(refreshError);
         } finally {
           isRefreshing = false;
         }
@@ -64,4 +86,8 @@ export const createApiClient = (baseURL = environment.apiUrl) => {
   return apiClient;
 };
 
-export const apiClient = createApiClient();
+// Auth API client
+export const authApiClient = createApiClient(environment.authUrl);
+
+// API client for other requests
+export const apiClient = createApiClient(environment.apiUrl);
