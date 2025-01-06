@@ -1,14 +1,17 @@
 "use client";
+import GenericModal from "@/components/generic-modal";
 import GenericTable from "@/components/generic-table";
 import { useParents } from "@/hooks/useParent";
 import type { Parent } from "@/interface/parent";
-import { ChipProps } from "@nextui-org/chip";
+import { useDisclosure } from "@nextui-org/modal";
 import { Spinner } from "@nextui-org/spinner";
 import React from "react";
 
 const Parent = () => {
   const { isLoading, fetchParents } = useParents();
   const [parents, setParents] = React.useState<Parent[]>([]); // Adjust the type as necessary
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   console.log(isLoading);
 
   React.useEffect(() => {
@@ -18,17 +21,12 @@ const Parent = () => {
         console.log(response.data);
         setParents(response.data); // Adjust based on your API response structure
       } catch (error) {
-        console.error('Failed to fetch parents:', error);
+        console.error("Failed to fetch parents:", error);
       }
     };
 
     loadParents();
   }, [fetchParents]);
-
-  const handleAdd = () => {
-    console.log("Add new user");
-    // Implement add user logic
-  };
 
   const handleEdit = (id: number) => {
     console.log("Edit user with ID:", id);
@@ -47,7 +45,7 @@ const Parent = () => {
     { name: "CONTACT NO", uid: "contactNumber" },
   ];
 
-  const INITIAL_VISIBLE_COLUMNS = ["id","name", "email","contactNumber"];
+  const INITIAL_VISIBLE_COLUMNS = ["id", "name", "email", "contactNumber"];
 
   // const statusOptions = [
   //   { name: "Active", uid: "active" },
@@ -61,6 +59,61 @@ const Parent = () => {
   //   vacation: "warning",
   // };
 
+  const inputFields = [
+    {
+      label: "Name",
+      name: "name",
+      placeholder: "Enter your name",
+      type: "text",
+      isRequired: true,
+      validate: (value: string) => value.length < 1 ? "Name is required" : null,
+    },
+    {
+      label: "Username",
+      name: "username",
+      placeholder: "Enter your username",
+      type: "text",
+      isRequired: true,
+      validate: (value: string) => {
+        if (value.length < 3) {
+          return "Username must be at least 3 characters long";
+        }
+        return null;
+      },
+    },
+    {
+      label: "Email",
+      name: "email",
+      placeholder: "Enter your email",
+      type: "email",
+      isRequired: true,
+      validate: (value: string) => {
+        const emailPattern = /\S+@\S+\.\S+/;
+        return !emailPattern.test(value) ? "Please enter a valid email" : null;
+      },
+    },
+    {
+      label: "Contact No",
+      name: "contactNumber",
+      placeholder: "Enter your contact Number",
+      type: "text", 
+      isRequired: true,
+      validate: (value: string) => {
+        return !/^\d{10}$/.test(value) ? "Contact number must be 10 digits" : null;
+      },
+    },
+  ];
+
+  const handleConfirm = (values: Record<string, string>) => {
+    console.log("Form values submitted:", values);
+    // Additional logic for handling the submitted values
+  };
+
+  const handleClose = () => {
+    console.log("Close button clicked");
+    // Additional logic for close action
+  };
+
   return (
     <>
       {isLoading ? (
@@ -68,13 +121,25 @@ const Parent = () => {
           <Spinner />
         </div>
       ) : (
-        <GenericTable
-          columns={columns}
-          data={parents}
-          initialVisibleColumns={INITIAL_VISIBLE_COLUMNS}
-          // statusOptions={statusOptions}
-          // statusColorMap={statusColorMap}
-        />
+        <>
+          <GenericTable
+            columns={columns}
+            data={parents}
+            initialVisibleColumns={INITIAL_VISIBLE_COLUMNS}
+            onAddNew={onOpen}
+            // statusOptions={statusOptions}
+            // statusColorMap={statusColorMap}
+          />
+
+          <GenericModal
+            isOpen={isOpen}
+            onOpenChange={onOpenChange}
+            title="Add Parent"
+            inputFields={inputFields} // Pass the input fields configuration
+            onClose={handleClose} // Optional close callback
+            onConfirm={handleConfirm} // Pass the confirm callback
+          />
+        </>
       )}
     </>
   );

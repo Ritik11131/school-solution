@@ -39,6 +39,7 @@ interface GenericTableProps {
   statusOptions?: Array<{ name: string; uid: string }>;
   statusColorMap?:any,
   initialVisibleColumns: Array<string>;
+  onAddNew: () => void;
 }
 
 // const INITIAL_VISIBLE_COLUMNS = ["name", "role", "status", "actions"];
@@ -48,7 +49,8 @@ const GenericTable: React.FC<GenericTableProps> = ({
   data,
   initialVisibleColumns,
   statusOptions = [],
-  statusColorMap
+  statusColorMap,
+  onAddNew
 }) => {
   type User = (typeof data)[0];
   const [filterValue, setFilterValue] = React.useState("");
@@ -269,7 +271,7 @@ const GenericTable: React.FC<GenericTableProps> = ({
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <Button color="primary" endContent={<PlusIcon />}>
+            <Button onPress={() => onAddNew()} color="primary" endContent={<PlusIcon />}>
               Add New
             </Button>
           </div>

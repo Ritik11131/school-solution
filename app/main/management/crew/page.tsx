@@ -85,6 +85,7 @@ const Crew = () => {
           columns={columns}
           data={crews}
           initialVisibleColumns={INITIAL_VISIBLE_COLUMNS}
+          onAddNew={handleAdd}
           // statusOptions={statusOptions}
           statusColorMap={statusColorMap}
         />
