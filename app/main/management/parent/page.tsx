@@ -8,25 +8,34 @@ import { Spinner } from "@nextui-org/spinner";
 import React from "react";
 
 const Parent = () => {
-  const { isLoading, fetchParents } = useParents();
+  const { isLoading, fetchParents, createParents } = useParents();
   const [parents, setParents] = React.useState<Parent[]>([]); // Adjust the type as necessary
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   console.log(isLoading);
 
   React.useEffect(() => {
-    const loadParents = async () => {
-      try {
-        const response = await fetchParents();
-        console.log(response.data);
-        setParents(response.data); // Adjust based on your API response structure
-      } catch (error) {
-        console.error("Failed to fetch parents:", error);
-      }
-    };
-
     loadParents();
   }, [fetchParents]);
+  
+  const loadParents = async () => {
+    try {
+      const response = await fetchParents();
+      console.log(response.data);
+      setParents(response.data); // Adjust based on your API response structure
+    } catch (error) {
+      console.error("Failed to fetch parents:", error);
+    }
+  };
+
+  const handleCreateParents = async (data: Parent) => {
+    try {
+      const response = await createParents(data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Failed to create parent:", error);
+    }
+  }
 
   const handleEdit = (id: number) => {
     console.log("Edit user with ID:", id);
@@ -104,9 +113,10 @@ const Parent = () => {
     },
   ];
 
-  const handleConfirm = (values: Record<string, string>) => {
+  const handleConfirm = async (values: Parent) => {
     console.log("Form values submitted:", values);
-    // Additional logic for handling the submitted values
+    await handleCreateParents(values);
+    await loadParents();
   };
 
   const handleClose = () => {
