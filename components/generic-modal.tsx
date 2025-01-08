@@ -7,9 +7,10 @@ import {
   ModalBody,
   ModalFooter,
 } from "@nextui-org/modal";
-import { Input } from "@nextui-org/input";
+import { Input, Textarea } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
 import { Form } from "@nextui-org/form";
+import { Radio, RadioGroup } from "@nextui-org/radio";
 
 interface InputField {
   label: string;
@@ -18,6 +19,7 @@ interface InputField {
   type: string;
   isRequired?: boolean;
   validate?: (value: string) => string | null; // Optional validation function
+  options?: any; // Optional options for select or radio fields
 }
 
 interface GenericModalProps {
@@ -37,7 +39,7 @@ const GenericModal: React.FC<GenericModalProps> = ({
   onClose,
   onConfirm,
 }) => {
-    const submitButtonRef = React.useRef<HTMLButtonElement | null>(null);
+  const submitButtonRef = React.useRef<HTMLButtonElement | null>(null);
   const [submitted, setSubmitted] = React.useState<Record<
     string,
     string
@@ -97,18 +99,46 @@ const GenericModal: React.FC<GenericModalProps> = ({
             validationBehavior="native"
             onSubmit={onSubmit}
           >
-            {inputFields.map((field) => (
-              <Input
-                key={field.name}
-                isRequired={field.isRequired}
-                label={field.label}
-                labelPlacement="outside"
-                name={field.name}
-                placeholder={field.placeholder}
-                type={field.type}
-                validate={field.validate}
-              />
-            ))}
+            {inputFields.map((field) => {
+              return field.type === "radio" ? (
+                <RadioGroup
+                  orientation="horizontal"
+                  key={field.name}
+                  label={field.label}
+                  name={field.name}
+                  isRequired={field.isRequired}
+                >
+                  {field.options?.map((option: any, index: any) => (
+                    <Radio key={index} value={option.name}>
+                      {option.label}
+                    </Radio>
+                  ))}
+                </RadioGroup>
+              ) : field.type === 'textarea' ? (
+                <Textarea
+                  key={field.name}
+                  isRequired={field.isRequired}
+                  label={field.label}
+                  labelPlacement="outside"
+                  name={field.name}
+                  placeholder={field.placeholder}
+                  type={field.type}
+                  validate={field.validate}
+                />
+              ) : (
+                <Input
+                  key={field.name}
+                  isRequired={field.isRequired}
+                  label={field.label}
+                  labelPlacement="outside"
+                  name={field.name}
+                  placeholder={field.placeholder}
+                  type={field.type}
+                  validate={field.validate}
+                />
+              );
+            })}
+
             <div className="w-full mt-4 mb-4 gap-4 hidden">
               <Button color="primary" type="submit" ref={submitButtonRef}>
                 Submit
@@ -117,10 +147,14 @@ const GenericModal: React.FC<GenericModalProps> = ({
           </Form>
         </ModalBody>
         <ModalFooter>
-          <Button color="danger" variant="flat" onPress={() => {
-            onClose && onClose();
-            onOpenChange(false);
-          }}>
+          <Button
+            color="danger"
+            variant="flat"
+            onPress={() => {
+              onClose && onClose();
+              onOpenChange(false);
+            }}
+          >
             Close
           </Button>
           <Button color="primary" onPress={handleFooterSubmit}>

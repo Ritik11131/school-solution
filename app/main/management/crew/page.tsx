@@ -1,15 +1,21 @@
 'use client'
+
+import React from 'react'
+import GenericModal from '@/components/generic-modal';
 import GenericTable from '@/components/generic-table';
 import { useCrew } from '@/hooks/useCrew';
 import { CrewMember } from '@/interface/crew';
 import { ChipProps } from '@nextui-org/chip';
 import { Spinner } from '@nextui-org/spinner';
-import React from 'react'
+import { useDisclosure } from "@nextui-org/modal";
+
 
 const Crew = () => {
 
    const { isLoading, fetchCrews } = useCrew();
     const [crews, setCrews] = React.useState<CrewMember[]>([]); // Adjust the type as necessary
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
 
   React.useEffect(() => {
       const loadCrews = async () => {
@@ -72,7 +78,107 @@ const Crew = () => {
 
   const INITIAL_VISIBLE_COLUMNS = ["id","name", "email","contactNumber","licenseNumber","role"];
 
+  const handleConfirm = (values: Record<string, string>) => {
+    console.log("Form values submitted:", values);
+    // Additional logic for handling the submitted values
+  };
 
+  const inputFields = [
+    {
+      label: "Name",
+      name: "name",
+      placeholder: "Enter your name",
+      type: "text",
+      isRequired: true,
+      validate: (value: string) => value.length < 1 ? "Name is required" : null,
+    },
+    {
+      label: "Username",
+      name: "username",
+      placeholder: "Enter your username",
+      type: "text",
+      isRequired: true,
+      validate: (value: string) => {
+        if (value.length < 3) {
+          return "Username must be at least 3 characters long";
+        }
+        return null;
+      },
+    },
+    {
+      label: "Email",
+      name: "email",
+      placeholder: "Enter your email",
+      type: "email",
+      isRequired: true,
+      validate: (value: string) => {
+        const emailPattern = /\S+@\S+\.\S+/;
+        return !emailPattern.test(value) ? "Please enter a valid email" : null;
+      },
+    },
+    {
+      label: "Contact No",
+      name: "contactNumber",
+      placeholder: "Enter your contact Number",
+      type: "text", 
+      isRequired: true,
+      validate: (value: string) => {
+        return !/^\d{10}$/.test(value) ? "Contact number must be 10 digits" : null;
+      },
+    },
+    {
+      label: "Emergency Contact No",
+      name: "emergencyContact",
+      placeholder: "Enter your no",
+      type: "text",
+      isRequired: true,
+      validate: (value: string) => {
+        return !/^\d{10}$/.test(value) ? "Contact number must be 10 digits" : null;
+      },
+    },
+    {
+      label: "License No",
+      name: "licenseNumber",
+      placeholder: "Enter your license no",
+      type: "text",
+      isRequired: true,
+      validate: (value: string) => value.length < 1 ? "License No is required" : null,
+    },
+    {
+      label: "Address",
+      name: "address",
+      placeholder: "Enter your address",
+      type: "textarea",
+      isRequired: true,
+      validate: (value: string) => value.length < 1 ? "Address is required" : null,
+    },
+    {
+      label:'Role',
+      name:'role',
+      placeholder:'',
+      type:'radio',
+      options:[
+        {
+          label: "Pilot",
+          name: "pilot",
+        },
+        {
+          label: "Helper",
+          name: "helper",
+        },
+        {
+          label: "Teacher",
+          name: "teacher",
+        },
+       
+      ]
+    }
+  ];
+
+  const handleClose = () => {
+    console.log("Close button clicked");
+    // Additional logic for close action
+  };
 
   return (
     <>
@@ -81,14 +187,25 @@ const Crew = () => {
           <Spinner />
         </div>
       ) : (
+        <>
         <GenericTable
           columns={columns}
           data={crews}
           initialVisibleColumns={INITIAL_VISIBLE_COLUMNS}
-          onAddNew={handleAdd}
+          onAddNew={onOpen}
           // statusOptions={statusOptions}
           statusColorMap={statusColorMap}
-        />
+          />
+
+<GenericModal
+            isOpen={isOpen}
+            onOpenChange={onOpenChange}
+            title="Add Parent"
+            inputFields={inputFields} // Pass the input fields configuration
+            onClose={handleClose} // Optional close callback
+            onConfirm={handleConfirm} // Pass the confirm callback
+          />
+          </>
       )}
     </>
   )

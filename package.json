@@ -26,6 +26,7 @@
 		"@nextui-org/modal": "^2.2.7",
 		"@nextui-org/navbar": "2.2.3",
 		"@nextui-org/pagination": "^2.2.7",
+		"@nextui-org/radio": "^2.3.8",
 		"@nextui-org/select": "^2.4.8",
 		"@nextui-org/snippet": "2.2.4",
 		"@nextui-org/spinner": "^2.2.5",
