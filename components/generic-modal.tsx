@@ -28,7 +28,7 @@ interface GenericModalProps {
   title: string;
   inputFields: InputField[];
   onClose?: () => void; // Callback for close action
-  onConfirm?: (values: Record<string, string>) => void; // Callback for confirm action
+  onConfirm?: (values: any) => void; // Callback for confirm action
 }
 
 const GenericModal: React.FC<GenericModalProps> = ({
@@ -46,8 +46,6 @@ const GenericModal: React.FC<GenericModalProps> = ({
   > | null>(null);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log("yhi call kregaa");
-
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.currentTarget));
 
