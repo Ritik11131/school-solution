@@ -17,3 +17,18 @@ export interface CrewMember {
     message: string;
     data: CrewMember[];
   }
+
+  export interface CrewPost {
+    name: string;
+    email: string;
+    username: string;
+    contactNumber: string;
+    address: string;
+    isPilot: boolean;
+    isHelper: boolean;
+    isTeacher: boolean;
+    attributes: {
+      emergencyContact: string;
+      licenseNumber: string;
+    };
+  }

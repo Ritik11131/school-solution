@@ -4,7 +4,7 @@ import React from 'react'
 import GenericModal from '@/components/generic-modal';
 import GenericTable from '@/components/generic-table';
 import { useCrew } from '@/hooks/useCrew';
-import { CrewMember } from '@/interface/crew';
+import { CrewPost, CrewMember } from '@/interface/crew';
 import { ChipProps } from '@nextui-org/chip';
 import { Spinner } from '@nextui-org/spinner';
 import { useDisclosure } from "@nextui-org/modal";
@@ -12,32 +12,41 @@ import { useDisclosure } from "@nextui-org/modal";
 
 const Crew = () => {
 
-   const { isLoading, fetchCrews } = useCrew();
+   const { isLoading, fetchCrews, createCrews } = useCrew();
     const [crews, setCrews] = React.useState<CrewMember[]>([]); // Adjust the type as necessary
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 
   React.useEffect(() => {
-      const loadCrews = async () => {
-        try {
-          const response = await fetchCrews();
-          const modifiedResponse = response.data.map((crew: CrewMember) => ({
-            ...crew,
-            role: [
-              crew.isPilot ? 'Pilot' : null,
-              crew.isHelper ? 'Helper' : null,
-              crew.isTeacher ? 'Teacher' : null,
-            ].filter(Boolean).join(', ') || 'Unassigned' // Join roles or set to 'No Role' if none
-          }));          
-          setCrews(modifiedResponse); // Set the modified crew data
-        } catch (error) {
-          console.error('Failed to fetch parents:', error);
-        }
-      };
+    loadCrews();
+  }, [fetchCrews]);
   
-      loadCrews();
-    }, [fetchCrews]);
+  const loadCrews = async () => {
+    try {
+      const response = await fetchCrews();
+      const modifiedResponse = response.data.map((crew: CrewMember) => ({
+        ...crew,
+        role: [
+          crew.isPilot ? 'Pilot' : null,
+          crew.isHelper ? 'Helper' : null,
+          crew.isTeacher ? 'Teacher' : null,
+        ].filter(Boolean).join(', ') || 'Unassigned' // Join roles or set to 'No Role' if none
+      }));          
+      setCrews(modifiedResponse); // Set the modified crew data
+    } catch (error) {
+      console.error('Failed to fetch parents:', error);
+    }
+  };
 
+
+  const handleCreateCrews = async (data: CrewPost) => {
+      try {
+        const response = await createCrews(data);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Failed to create parent:", error);
+      }
+    }
 
     const handleAdd = () => {
         console.log("Add new user");
@@ -78,9 +87,25 @@ const Crew = () => {
 
   const INITIAL_VISIBLE_COLUMNS = ["id","name", "email","contactNumber","licenseNumber","role"];
 
-  const handleConfirm = (values: Record<string, string>) => {
+  const handleConfirm = async (values: any) => {
     console.log("Form values submitted:", values);
-    // Additional logic for handling the submitted values
+    const payload = {
+      isPilot: values.role === "pilot",
+      isHelper: values.role === "helper",
+      isTeacher: values.role === "teacher",
+      attributes: {
+        licenseNumber: values.licenseNumber,
+        emergencyContact: values.emergencyContact,
+      },
+      name: values.name,
+      email: values.email,
+      contactNumber: values.contactNumber,
+      username: values.username,
+      address: values.address,
+    };
+    
+    await handleCreateCrews(payload);
+    await loadCrews();
   };
 
   const inputFields = [
