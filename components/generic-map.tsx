@@ -1,8 +1,8 @@
 import { useEffect, useRef, memo } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import 'leaflet/dist/images/marker-icon.png';
-import 'leaflet/dist/images/marker-shadow.png';
+// import 'leaflet/dist/images/marker-icon.png';
+// import 'leaflet/dist/images/marker-shadow.png';
 
 interface GenericMapProps {
   geojsonData?: GeoJSON.FeatureCollection; // Make geojsonData optional
