@@ -15,6 +15,7 @@ export const siteConfig = {
       children: [
         { key:'crew',label: "Crew", href: "/main/management/crew" },
         { key:'parent',label: "Parent", href: "/main/management/parent" },
+        { key:'route',label: "Route", href: "/main/management/route" },
       ],
     },
   ],
