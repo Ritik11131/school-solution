@@ -1,13 +1,15 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, memo } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet/dist/images/marker-icon.png';
+import 'leaflet/dist/images/marker-shadow.png';
 
 interface GenericMapProps {
-  geojsonData: GeoJSON.FeatureCollection;
+  geojsonData?: GeoJSON.FeatureCollection; // Make geojsonData optional
   className?: string;
 }
 
-const GenericMap = ({ geojsonData, className = 'h-[600px] w-full' }: GenericMapProps) => {
+const GenericMap = memo(({ geojsonData, className = 'h-[600px] w-full' }: GenericMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const geoJsonLayerRef = useRef<L.GeoJSON | null>(null);
@@ -16,11 +18,14 @@ const GenericMap = ({ geojsonData, className = 'h-[600px] w-full' }: GenericMapP
     if (!mapRef.current || mapInstanceRef.current) return;
 
     // Initialize the map
-    mapInstanceRef.current = L.map(mapRef.current);
+    mapInstanceRef.current = L.map(mapRef.current, {
+      center: [0, 0], // Set initial center
+      zoom: 2, // Set initial zoom level
+    });
 
     // Add the OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(mapInstanceRef.current);
 
     // Cleanup on unmount
@@ -40,15 +45,30 @@ const GenericMap = ({ geojsonData, className = 'h-[600px] w-full' }: GenericMapP
       geoJsonLayerRef.current.remove();
     }
 
-    // Add new GeoJSON layer
-    geoJsonLayerRef.current = L.geoJSON(geojsonData).addTo(mapInstanceRef.current);
+    // Add new GeoJSON layer only if geojsonData is valid
+    if (geojsonData && geojsonData.features.length > 0) {
+      geoJsonLayerRef.current = L.geoJSON(geojsonData,{
+        pointToLayer: (feature, latlng) => {
+          console.log(feature, latlng);
+          
+          // Create a marker for Point features
+          return L.marker(latlng);
+        },
+        onEachFeature: (feature, layer) => {
+          // Bind a popup to each feature
+          if (feature.properties && feature.properties.name) {
+            layer.bindPopup(feature.properties.name);
+          }
+        }
+      }).addTo(mapInstanceRef.current);
 
-    // Fit bounds to GeoJSON
-    const bounds = geoJsonLayerRef.current.getBounds();
-    mapInstanceRef.current.fitBounds(bounds);
+      // Fit bounds to GeoJSON
+      const bounds = geoJsonLayerRef.current.getBounds();
+      mapInstanceRef.current.fitBounds(bounds);
+    }
   }, [geojsonData]);
 
   return <div ref={mapRef} className={className} />;
-};
+});
 
 export default GenericMap;
