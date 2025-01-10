@@ -1,52 +1,54 @@
-import React, { useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
-import { LatLngBounds, GeoJSON as LeafletGeoJSON } from 'leaflet';
+import { useEffect, useRef } from 'react';
+import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 interface GenericMapProps {
-  geojsonData?: GeoJSON.FeatureCollection;
+  geojsonData: GeoJSON.FeatureCollection;
   className?: string;
 }
 
-// This component handles fitting bounds
-const GeoJSONLayer: React.FC<{ data: GeoJSON.FeatureCollection }> = ({ data }) => {
-  const map = useMap();
-  const geoJsonRef = useRef<LeafletGeoJSON>(null);
+const GenericMap = ({ geojsonData, className = 'h-[600px] w-full' }: GenericMapProps) => {
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
+  const geoJsonLayerRef = useRef<L.GeoJSON | null>(null);
 
   useEffect(() => {
-    if (geoJsonRef.current) {
-      const bounds = geoJsonRef.current.getBounds();
-      map.fitBounds(bounds);
+    if (!mapRef.current || mapInstanceRef.current) return;
+
+    // Initialize the map
+    mapInstanceRef.current = L.map(mapRef.current);
+
+    // Add the OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(mapInstanceRef.current);
+
+    // Cleanup on unmount
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!mapInstanceRef.current) return;
+
+    // Remove existing GeoJSON layer if it exists
+    if (geoJsonLayerRef.current) {
+      geoJsonLayerRef.current.remove();
     }
-    
-  }, [data, map]);
 
-  return <GeoJSON data={data} ref={geoJsonRef} />;
-};
+    // Add new GeoJSON layer
+    geoJsonLayerRef.current = L.geoJSON(geojsonData).addTo(mapInstanceRef.current);
 
-const GenericMap: React.FC<GenericMapProps> = ({ geojsonData, className = 'h-[600px] w-full' }) => {
-  // Calculate initial bounds from GeoJSON
-  const calculateInitialBounds = (): LatLngBounds => {
-    const layer = new LeafletGeoJSON(geojsonData);
-    return layer.getBounds();
-  };
+    // Fit bounds to GeoJSON
+    const bounds = geoJsonLayerRef.current.getBounds();
+    mapInstanceRef.current.fitBounds(bounds);
+  }, [geojsonData]);
 
-  const initialBounds = calculateInitialBounds();
-
-  return (
-    <MapContainer
-      bounds={initialBounds}
-      className={className}
-      zoom={13}
-      scrollWheelZoom={true}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      {geojsonData && <GeoJSONLayer data={geojsonData} />}
-    </MapContainer>
-  );
+  return <div ref={mapRef} className={className} />;
 };
 
 export default GenericMap;
