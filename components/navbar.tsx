@@ -23,7 +23,7 @@ import {
   DropdownTrigger,
 } from "@nextui-org/dropdown";
 import { Button } from "@nextui-org/button";
-import { ChevronDownIcon, User2Icon, Users } from "lucide-react";
+import { ChevronDownIcon, Route, User2Icon, Users } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 export const Navbar = () => {
@@ -75,7 +75,7 @@ export const Navbar = () => {
                 <DropdownItem
                   key={child.href}
                   startContent={
-                    child.key === "parent" ? <Users /> : <User2Icon />
+                    child.key === "parent" ? <Users /> : child.key === 'route' ? <Route /> : <User2Icon />
                   }
                 >
                   {child.label}

@@ -49,8 +49,6 @@ const GenericMap = memo(({ geojsonData, className = 'h-[600px] w-full' }: Generi
     if (geojsonData && geojsonData.features.length > 0) {
       geoJsonLayerRef.current = L.geoJSON(geojsonData,{
         pointToLayer: (feature, latlng) => {
-          console.log(feature, latlng);
-          
           // Create a marker for Point features
           return L.marker(latlng);
         },

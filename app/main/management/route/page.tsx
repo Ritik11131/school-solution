@@ -2,7 +2,7 @@
 
 import { Accordion, AccordionItem } from "@nextui-org/accordion";
 import React from "react";
-import { Map } from "lucide-react";
+import { Route as RouteIcon } from "lucide-react";
 import GenericMap from "@/components/generic-map";
 import { Spinner } from "@nextui-org/spinner";
 
@@ -77,7 +77,7 @@ const Route = () => {
             <AccordionItem
               key={index}
               aria-label={route.name}
-              startContent={<Map color="#006FEE" />}
+              startContent={<RouteIcon color="#006FEE" />}
               subtitle="Start Time and End Time"
               title={route.name}
               onPress={() => {
