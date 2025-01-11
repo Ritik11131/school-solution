@@ -25,7 +25,7 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function AuthLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
