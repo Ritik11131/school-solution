@@ -1,18 +1,36 @@
 "use client";
 
-import { Accordion, AccordionItem } from "@nextui-org/accordion";
+
 import React from "react";
-import { Route as RouteIcon } from "lucide-react";
-import GenericMap from "@/components/generic-map";
 import { Spinner } from "@nextui-org/spinner";
+import { useRoute } from "@/hooks/useRoute";
+import GenericTable from "@/components/generic-table";
+import GenericDrawer from "@/components/generic-drawer";
+import GenericMap from "@/components/generic-map";
 
 const Route = () => {
-  const [isLoading, setloading] = React.useState(false);
-  const routes = [
-    { name: "Route 1" },
-    { name: "Route 2" },
-    { name: "Route 3" },
+  const {isLoading,fetchAllRoutes,fetchSelectedRoutes} = useRoute();
+  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
+  const [routes,setRoutes] = React.useState([]);
+  const [geoJson,setGeoJson] = React.useState<any>({})
+
+  const columns = [
+    { name: "ID", uid: "id", sortable: true },
+    { name: "NAME", uid: "name", sortable: true },
+    { name: "TYPE", uid: "type", sortable: true },
+    { name: "DESCRIPTION", uid: "description", sortable: true },
+    { name: "DISTANCE (M)", uid: "distanceM", sortable: true },
+    { name: "START TIME", uid: "startTime", sortable: true },
+    { name: "END TIME", uid: "endTime", sortable: true },
+    { name: "START COORDINATES", uid: "startCoordinates", sortable: true },
+    { name: "END COORDINATES", uid: "endCoordinates", sortable: true },
+    {name: "ACTIONS", uid: "actions"},
   ];
+
+  const INITIAL_VISIBLE_COLUMNS = ["id", "name", "type", "description","distanceM","startTime","endTime","actions"];
+
+  
+ 
 
   const sampleGeoJson: GeoJSON.FeatureCollection = {
     type: "FeatureCollection",
@@ -69,36 +87,76 @@ const Route = () => {
     ],
   };
 
+
+   React.useEffect(() => {
+    loadRoutes();
+    }, [fetchAllRoutes]);
+    
+    const loadRoutes = async () => {
+      try {
+        const response = await fetchAllRoutes();
+       console.log(response,'ress');
+       setRoutes(response?.data)
+      } catch (error) {
+        console.error('Failed to fetch parents:', error);
+      }
+    };
+
+    
+    const handleOpen = () => setIsDrawerOpen(true);
+    const handleClose = () => setIsDrawerOpen(false);
+    
+    const handleAction = () => {
+      console.log("Action button clicked");
+      setIsDrawerOpen(false);
+    };
+    
+    const handleRowAction = async (action: string, rowData: any) => {
+      if (action === "view") {
+        const selectedRouteObject  = await fetchSelectedRoutes(rowData); // Example function
+        console.log(selectedRouteObject);
+        
+        setGeoJson(selectedRouteObject.data.geojson)
+        handleOpen();
+      }
+    };
+
+
   return (
     <>
-      <Accordion variant="splitted">
-        {routes.map((route, index) => {
-          return (
-            <AccordionItem
-              key={index}
-              aria-label={route.name}
-              startContent={<RouteIcon color="#006FEE" />}
-              subtitle="Start Time and End Time"
-              title={route.name}
-              onPress={() => {
-                setloading(true);
-                setTimeout(() => {
-                  setloading(false);
-                }, 1000);
-              }}
-            >
-              {isLoading ? (
-                <div className="flex justify-center items-center">
-                  <Spinner />
-                </div>
-              ) : (
-                <GenericMap geojsonData={sampleGeoJson} />
-              )}
-            </AccordionItem>
-          );
-        })}
-      </Accordion>
-    </>
+    {isLoading ? (
+      <div className="flex justify-center items-center">
+        <Spinner />
+      </div>
+    ) : (
+      <>
+        <GenericTable
+          columns={columns}
+          data={routes}
+          initialVisibleColumns={INITIAL_VISIBLE_COLUMNS}
+          onRowAction={handleRowAction}
+          // onAddNew={}
+          // statusOptions={statusOptions}
+          // statusColorMap={statusColorMap}
+        />
+       <GenericDrawer
+        isOpen={isDrawerOpen}
+        onClose={handleClose}
+        placement="bottom"
+         size="5xl"
+        // onAction={handleAction}
+        title="Custom Drawer Title"
+        bodyContent={
+          <GenericMap geojsonData={geoJson} />
+        }
+        actionLabel="Submit"
+        closeLabel="Cancel"
+        isDismissable={false}
+        isKeyboardDismissDisabled={true}
+      />
+      </>
+    )}
+  </>
   );
 };
 

@@ -1,8 +1,6 @@
 import { useEffect, useRef, memo } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-// import 'leaflet/dist/images/marker-icon.png';
-// import 'leaflet/dist/images/marker-shadow.png';
 
 interface GenericMapProps {
   geojsonData?: GeoJSON.FeatureCollection; // Make geojsonData optional
@@ -50,7 +48,14 @@ const GenericMap = memo(({ geojsonData, className = 'h-[600px] w-full' }: Generi
       geoJsonLayerRef.current = L.geoJSON(geojsonData,{
         pointToLayer: (feature, latlng) => {
           // Create a marker for Point features
-          return L.marker(latlng);
+          return L.marker(latlng, {
+            icon: L.icon({
+              iconUrl: "/marker.png", // Path to the image in the public folder
+              iconSize: [35, 40], // Size of the icon
+              iconAnchor: [17, 40], // Adjusted anchor point for the icon (centered horizontally and at the bottom vertically)
+              popupAnchor: [0, -40], // Adjusted popup position (40px above the icon)
+            }),
+          });
         },
         onEachFeature: (feature, layer) => {
           // Bind a popup to each feature

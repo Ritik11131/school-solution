@@ -21,7 +21,7 @@ import { Button } from "@nextui-org/button";
 import { Pagination } from "@nextui-org/pagination";
 import { Chip, ChipProps } from "@nextui-org/chip";
 import { User } from "@nextui-org/user";
-import { ChevronDownIcon,SearchIcon,PlusIcon,EllipsisVertical  } from "lucide-react";
+import { ChevronDownIcon,SearchIcon,PlusIcon,EllipsisVertical, EyeIcon  } from "lucide-react";
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number;
@@ -39,7 +39,8 @@ interface GenericTableProps {
   statusOptions?: Array<{ name: string; uid: string }>;
   statusColorMap?:any,
   initialVisibleColumns: Array<string>;
-  onAddNew: () => void;
+  onAddNew?: () => void;
+  onRowAction?: (action: string, rowData: any) => void; // Add this prop
 }
 
 // const INITIAL_VISIBLE_COLUMNS = ["name", "role", "status", "actions"];
@@ -50,7 +51,8 @@ const GenericTable: React.FC<GenericTableProps> = ({
   initialVisibleColumns,
   statusOptions = [],
   statusColorMap,
-  onAddNew
+  onAddNew,
+  onRowAction, // Destructure the new prop
 }) => {
   type User = (typeof data)[0];
   const [filterValue, setFilterValue] = React.useState("");
@@ -163,9 +165,12 @@ const GenericTable: React.FC<GenericTableProps> = ({
                   <EllipsisVertical className="text-default-300" />
                 </Button>
               </DropdownTrigger>
-              <DropdownMenu>
-                <DropdownItem key="edit">Edit</DropdownItem>
-                <DropdownItem key="delete">Delete</DropdownItem>
+              <DropdownMenu onAction={(key) => {
+                    if (onRowAction) {
+                      onRowAction(key as string, user); // Emit action and row data
+                    }
+                  }}>
+              <DropdownItem startContent={<EyeIcon/>} key="view">View</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -173,7 +178,7 @@ const GenericTable: React.FC<GenericTableProps> = ({
       default:
         return cellValue;
     }
-  }, []);
+  }, [onRowAction]);
 
   const onNextPage = React.useCallback(() => {
     if (page < pages) {
@@ -271,9 +276,10 @@ const GenericTable: React.FC<GenericTableProps> = ({
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <Button onPress={() => onAddNew()} color="primary" endContent={<PlusIcon />}>
+            {onAddNew && <Button onPress={() => onAddNew()} color="primary" endContent={<PlusIcon />}>
               Add New
-            </Button>
+            </Button>}
+           
           </div>
         </div>
         <div className="flex justify-between items-center">
@@ -314,22 +320,6 @@ const GenericTable: React.FC<GenericTableProps> = ({
         </span>
         
         <div className="hidden sm:flex w-[30%] justify-end gap-2">
-          {/* <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            onPress={onPreviousPage}
-          >
-            Previous
-          </Button>
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            onPress={onNextPage}
-          >
-            Next
-          </Button> */}
             <Pagination
           isCompact
           showControls
