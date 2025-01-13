@@ -13,6 +13,8 @@ const Route = () => {
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const [routes,setRoutes] = React.useState([]);
   const [geoJson,setGeoJson] = React.useState<any>({})
+  
+  const MemoizedGenericMap = React.memo(GenericMap);
 
   const columns = [
     { name: "ID", uid: "id", sortable: true },
@@ -121,6 +123,11 @@ const Route = () => {
       }
     };
 
+    const handleAddRoute = () => {
+      setGeoJson({});
+      handleOpen();
+    }
+
 
   return (
     <>
@@ -135,7 +142,7 @@ const Route = () => {
           data={routes}
           initialVisibleColumns={INITIAL_VISIBLE_COLUMNS}
           onRowAction={handleRowAction}
-          // onAddNew={}
+          onAddNew={handleAddRoute}
           // statusOptions={statusOptions}
           // statusColorMap={statusColorMap}
         />
@@ -145,12 +152,9 @@ const Route = () => {
         placement="bottom"
          size="5xl"
         // onAction={handleAction}
-        title="Custom Drawer Title"
-        bodyContent={
-          <GenericMap geojsonData={geoJson} />
-        }
-        actionLabel="Submit"
-        closeLabel="Cancel"
+        title="Route"
+          bodyContent={<MemoizedGenericMap geojsonData={geoJson} />}
+        closeLabel="Close"
         isDismissable={false}
         isKeyboardDismissDisabled={true}
       />
